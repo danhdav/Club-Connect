@@ -10,5 +10,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findByNameContainingIgnoreCase(String query);
 
     List<Club> findByTag(String tag);
+    long count();
 }
 

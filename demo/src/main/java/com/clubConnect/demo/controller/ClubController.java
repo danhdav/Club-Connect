@@ -45,4 +45,12 @@ public class ClubController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalClubs() {
+        long count = clubService.getTotalClubs();
+        return ResponseEntity.ok(count);
+    }
+
+
 }

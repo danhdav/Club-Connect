@@ -72,6 +72,10 @@ public class ClubService {
         return clubRepository.save(club);
     }
 
+    public long getTotalClubs(){
+        return clubRepository.count();
+    }
+
     private boolean isAdminOrOfficer(User user) {
         return user.getRoles().contains(Role.ADMIN) || user.getRoles().contains(Role.OFFICER);
     }

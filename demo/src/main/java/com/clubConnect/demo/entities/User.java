@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,8 +19,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column(unique = true, nullable = false)
-    private String username;
+    private String username;  // Changed from email to username for consistency
 
     @Column(nullable = false)
     private String password;
@@ -35,14 +37,16 @@ public class User implements UserDetails {
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
 
-    @ElementCollection
-    private List<Club> subscribedClubs;
+    // Remove the circular dependency with Club
+    @ManyToMany(mappedBy = "officers")
+    private Set<Club> officerOf = new HashSet<>();
 
     // Default constructor for JPA
     public User() {}
 
     // Constructor for creating a user with initial roles
-    public User(String username, String password, Set<Role> roles) {
+    public User(String name, String username, String password, Set<Role> roles) {
+        this.name = name;
         this.username = username;
         this.password = password;
         this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
@@ -63,11 +67,6 @@ public class User implements UserDetails {
         return new HashSet<>(roles); // Return a copy to prevent external modification
     }
 
-    // Remove public setRoles or make it private/package-private
-    private void setRoles(Set<Role> roles) {
-        this.roles = roles != null ? new HashSet<>(roles) : new HashSet<>();
-    }
-
     // Spring Security methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -76,14 +75,22 @@ public class User implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;  // Now using username field consistently
     }
 
     @Override
@@ -110,8 +117,36 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    // Other getters if needed
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Set<Club> getOfficerOf() {
+        return officerOf;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id != null && id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    public void setId(long l) {
+        id = l;
     }
 }

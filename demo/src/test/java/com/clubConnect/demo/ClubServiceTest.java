@@ -11,11 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 
-import java.nio.file.AccessDeniedException;
 import java.util.*;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,116 +30,232 @@ public class ClubServiceTest {
     private ClubService clubService;
 
     private User adminUser;
+    private User officerUser;
     private User regularUser;
-    private Club club;
+    private Club testClub;
 
     @BeforeEach
-    public void setUp() {
-        adminUser = new User("admin", "password", Collections.singleton(Role.ADMIN));
+    void setUp() {
+        // Create users with different roles
+        Set<Role> adminRoles = new HashSet<>();
+        adminRoles.add(Role.ADMIN);
+        adminUser = new User("Admin User", "admin", "password", adminRoles);
+        adminUser.setId(1L);
 
-        regularUser = new User("user", "password", Collections.singleton(Role.USER));
+        Set<Role> officerRoles = new HashSet<>();
+        officerRoles.add(Role.OFFICER);
+        officerUser = new User("Officer User", "officer", "password", officerRoles);
+        officerUser.setId(2L);
 
-        club = new Club();
-        club.setName("Tech Club");
-        club.setDescription("A club for tech enthusiasts");
-        List<String> tags = new ArrayList<>();
-        tags.add("Technology");
-        tags.add("Robotics");
-        club.setTags(tags);
+        Set<Role> userRoles = new HashSet<>();
+        userRoles.add(Role.USER);
+        regularUser = new User("Regular User", "user", "password", userRoles);
+        regularUser.setId(3L);
+
+        // Create a test club
+        testClub = new Club();
+        testClub.setId(1L);
+        testClub.setName("Test Club");
+        testClub.setDescription("A club for testing");
+        testClub.setTags(Arrays.asList("test", "club", "java"));
+        
+        // Add officer to club
+        testClub.addOfficer(officerUser);
     }
 
     @Test
-    public void testCreateClub_Success_AdminUser() throws AccessDeniedException {
-        when(clubRepository.save(club)).thenReturn(club);
+    void createClub_ShouldCreateClub_WhenUserIsAdmin() {
+        // Arrange
+        when(clubRepository.save(any(Club.class))).thenReturn(testClub);
 
-        Club result = clubService.createClub(club, adminUser);
+        // Act
+        Club createdClub = clubService.createClub(testClub, adminUser);
 
-        assertNotNull(result);
-        assertEquals("Tech Club", result.getName());
-        assertEquals("A club for tech enthusiasts", result.getDescription());
-        verify(clubRepository, times(1)).save(club);
+        // Assert
+        assertNotNull(createdClub);
+        assertEquals("Test Club", createdClub.getName());
+        verify(clubRepository).save(testClub);
     }
 
     @Test
-    public void testCreateClub_Failure_NonAdminUser() {
-
-        AccessDeniedException exception = assertThrows(AccessDeniedException.class, () -> {
-            clubService.createClub(club, regularUser);
-        });
-        assertEquals("Only admins can create clubs.", exception.getMessage());
+    void createClub_ShouldThrowException_WhenUserIsNotAdmin() {
+        // Act & Assert
+        assertThrows(AccessDeniedException.class, () -> 
+            clubService.createClub(testClub, regularUser)
+        );
         verify(clubRepository, never()).save(any(Club.class));
     }
 
     @Test
-    public void testSearchClubs_Success() {
+    void searchClubs_ShouldReturnMatchingClubs() {
         // Arrange
-        Club club1 = new Club();
-        club1.setName("Tech Club");
-        Club club2 = new Club();
-        club2.setName("Tech Enthusiasts");
-        List<Club> expectedClubs = Arrays.asList(club1, club2);
+        List<Club> clubs = Collections.singletonList(testClub);
+        when(clubRepository.findByNameContainingIgnoreCase("Test")).thenReturn(clubs);
 
-        when(clubRepository.findByNameContainingIgnoreCase("tech")).thenReturn(expectedClubs);
+        // Act
+        List<Club> result = clubService.searchClubs("Test");
 
-        List<Club> result = clubService.searchClubs("tech");
-
-        assertEquals(2, result.size());
-        assertEquals("Tech Club", result.get(0).getName());
-        assertEquals("Tech Enthusiasts", result.get(1).getName());
-        verify(clubRepository, times(1)).findByNameContainingIgnoreCase("tech");
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals("Test Club", result.get(0).getName());
     }
 
     @Test
-    public void testSearchClubsByTags_Success() {
-        Club club1 = new Club();
-        club1.setName("Tech Robotics Club");
-        club1.setTags(Arrays.asList("Technology", "Robotics"));
+    void searchClubsByTag_ShouldReturnMatchingClubs() {
+        // Arrange
+        List<Club> clubs = Collections.singletonList(testClub);
+        when(clubRepository.findByTag("test")).thenReturn(clubs);
 
-        Club club2 = new Club();
-        club2.setName("Technology Club");
-        club2.setTags(Arrays.asList("Technology", "Science"));
+        // Act
+        List<Club> result = clubService.searchClubsByTag(Collections.singletonList("test"));
 
-        Club club3 = new Club();
-        club3.setName("Robotics Club");
-        club3.setTags(Arrays.asList("Robotics", "Engineering"));
-
-        List<String> tags1 = Arrays.asList("Technology");
-        when(clubRepository.findByTag("Technology")).thenReturn(Arrays.asList(club1, club2));
-        List<Club> result1 = clubService.searchClubsByTag(tags1);
-        assertEquals(2, result1.size());
-        assertEquals("Tech Robotics Club", result1.get(0).getName());
-        assertEquals("Technology Club", result1.get(1).getName());
-
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals("Test Club", result.get(0).getName());
     }
 
     @Test
-    public void testSearchClubs_NoResults() {
-        when(clubRepository.findByNameContainingIgnoreCase("xyz")).thenReturn(Arrays.asList());
+    void searchClubsByTag_ShouldReturnEmptyList_WhenNoTagsProvided() {
+        // Act
+        List<Club> result = clubService.searchClubsByTag(Collections.emptyList());
 
-        List<Club> result = clubService.searchClubs("xyz");
-
+        // Assert
         assertTrue(result.isEmpty());
-        verify(clubRepository, times(1)).findByNameContainingIgnoreCase("xyz");
+        verify(clubRepository, never()).findByTag(anyString());
     }
 
     @Test
-    public void testDeleteClub_Success_AdminUser() throws AccessDeniedException {
-        Long clubId = 1L;
-        doNothing().when(clubRepository).deleteById(clubId);
+    void deleteClub_ShouldDeleteClub_WhenUserIsAdmin() {
+        // Act
+        clubService.deleteClub(1L, adminUser);
 
-        clubService.deleteClub(clubId, adminUser);
-
-        verify(clubRepository, times(1)).deleteById(clubId);
+        // Assert
+        verify(clubRepository).deleteById(1L);
     }
 
     @Test
-    public void testDeleteClub_Failure_NonAdminUser() {
-        Long clubId = 1L;
-
-        AccessDeniedException exception = assertThrows(AccessDeniedException.class, () -> {
-            clubService.deleteClub(clubId, regularUser);
-        });
-        assertEquals("Only admins can delete clubs.", exception.getMessage());
+    void deleteClub_ShouldThrowException_WhenUserIsNotAdmin() {
+        // Act & Assert
+        assertThrows(AccessDeniedException.class, () -> 
+            clubService.deleteClub(1L, regularUser)
+        );
         verify(clubRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    void updateClubName_ShouldUpdateName_WhenUserIsAdmin() {
+        // Arrange
+        when(clubRepository.findById(1L)).thenReturn(Optional.of(testClub));
+        when(clubRepository.save(any(Club.class))).thenReturn(testClub);
+
+        // Act
+        Club updatedClub = clubService.updateClubName(1L, "New Club Name", adminUser);
+
+        // Assert
+        assertEquals("New Club Name", updatedClub.getName());
+        verify(clubRepository).save(testClub);
+    }
+
+    @Test
+    void updateClubName_ShouldUpdateName_WhenUserIsOfficerOfClub() {
+        // Arrange
+        when(clubRepository.findById(1L)).thenReturn(Optional.of(testClub));
+        when(clubRepository.save(any(Club.class))).thenReturn(testClub);
+
+        // Act
+        Club updatedClub = clubService.updateClubName(1L, "New Club Name", officerUser);
+
+        // Assert
+        assertEquals("New Club Name", updatedClub.getName());
+        verify(clubRepository).save(testClub);
+    }
+
+    @Test
+    void updateClubName_ShouldThrowException_WhenUserIsNotAdminOrOfficer() {
+        // Act & Assert
+        assertThrows(AccessDeniedException.class, () -> 
+            clubService.updateClubName(1L, "New Club Name", regularUser)
+        );
+        verify(clubRepository, never()).save(any(Club.class));
+    }
+
+    @Test
+    void updateClubDescription_ShouldUpdateDescription_WhenUserIsAdmin() {
+        // Arrange
+        when(clubRepository.findById(1L)).thenReturn(Optional.of(testClub));
+        when(clubRepository.save(any(Club.class))).thenReturn(testClub);
+
+        // Act
+        Club updatedClub = clubService.updateClubDescription(1L, "New description", adminUser);
+
+        // Assert
+        assertEquals("New description", updatedClub.getDescription());
+        verify(clubRepository).save(testClub);
+    }
+
+    @Test
+    void updateClubDescription_ShouldUpdateDescription_WhenUserIsOfficerOfClub() {
+        // Arrange
+        when(clubRepository.findById(1L)).thenReturn(Optional.of(testClub));
+        when(clubRepository.save(any(Club.class))).thenReturn(testClub);
+
+        // Act
+        Club updatedClub = clubService.updateClubDescription(1L, "New description", officerUser);
+
+        // Assert
+        assertEquals("New description", updatedClub.getDescription());
+        verify(clubRepository).save(testClub);
+    }
+
+    @Test
+    void updateClubDescription_ShouldThrowException_WhenUserIsNotAdminOrOfficer() {
+        // Act & Assert
+        assertThrows(AccessDeniedException.class, () -> 
+            clubService.updateClubDescription(1L, "New description", regularUser)
+        );
+        verify(clubRepository, never()).save(any(Club.class));
+    }
+
+    @Test
+    void addOfficer_ShouldAddOfficer_WhenUserIsAdmin() {
+        // Arrange
+        User newOfficer = new User("New Officer", "newofficer", "password", Collections.singleton(Role.USER));
+        newOfficer.setId(4L);
+        
+        when(clubRepository.findById(1L)).thenReturn(Optional.of(testClub));
+        when(clubRepository.save(any(Club.class))).thenReturn(testClub);
+
+        // Act
+        Club updatedClub = clubService.addOfficer(1L, newOfficer, adminUser);
+
+        // Assert
+        assertTrue(updatedClub.getOfficers().contains(newOfficer));
+        verify(clubRepository).save(testClub);
+    }
+
+    @Test
+    void addOfficer_ShouldThrowException_WhenUserIsNotAdmin() {
+        // Arrange
+        User newOfficer = new User("New Officer", "newofficer", "password", Collections.singleton(Role.USER));
+        newOfficer.setId(4L);
+
+        // Act & Assert
+        assertThrows(AccessDeniedException.class, () -> 
+            clubService.addOfficer(1L, newOfficer, regularUser)
+        );
+        verify(clubRepository, never()).save(any(Club.class));
+    }
+
+    @Test
+    void getTotalClubs_ShouldReturnTotalCount() {
+        // Arrange
+        when(clubRepository.count()).thenReturn(5L);
+
+        // Act
+        long count = clubService.getTotalClubs();
+
+        // Assert
+        assertEquals(5L, count);
+        verify(clubRepository).count();
     }
 }

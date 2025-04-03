@@ -1,6 +1,7 @@
 package com.clubConnect.demo.entities;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,18 +15,23 @@ public class Club {
     private String description;
 
     @ElementCollection
-    private List<String> tags;  // Predefined tags, e.g., "sports", "music"
+    private List<String> tags = new ArrayList<>();  // Initialize to avoid NullPointerException
 
-    @ManyToMany
-    private List<User> officers;  // List of officers
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "club_officers",
+        joinColumns = @JoinColumn(name = "club_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> officers = new ArrayList<>();  // Initialize to avoid NullPointerException
 
     // Getters and Setters
-    public void addOfficer(User officer) {
-        this.officers.add(officer);
+    public Long getId() {
+        return id;
     }
 
-    public void removeOfficer(User officer) {
-        this.officers.remove(officer);
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -33,23 +39,47 @@ public class Club {
     }
 
     public void setName(String newName) {
-        name = newName;
-    }
-
-    public void setDescription(String newDescription) {
-        description = newDescription;
+        this.name = newName;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public List<String> getTags(){
+    public void setDescription(String newDescription) {
+        this.description = newDescription;
+    }
+
+    public List<String> getTags() {
         return tags;
     }
 
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
+
+    public List<User> getOfficers() {
+        return officers;
+    }
+
+    public void setOfficers(List<User> officers) {
+        this.officers = officers;
+    }
+
+    public void addOfficer(User officer) {
+        if (this.officers == null) {
+            this.officers = new ArrayList<>();
+        }
+        if (!this.officers.contains(officer)) {
+            this.officers.add(officer);
+        }
+    }
+
+    public void removeOfficer(User officer) {
+        if (this.officers != null) {
+            this.officers.remove(officer);
+        }
+    }
 }
+
 

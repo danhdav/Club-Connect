@@ -55,16 +55,16 @@ public class ClubServiceTest {
         // Create a test club
         testClub = new Club();
         testClub.setId(1L);
-        testClub.setName("Test Club");
+        testClub.setName("Comet Racing");
         testClub.setDescription("A club for testing");
-        testClub.setTags(Arrays.asList("test", "club", "java"));
+        testClub.setTags(Arrays.asList("test", "club", "racing"));
         
         // Add officer to club
         testClub.addOfficer(officerUser);
     }
 
     @Test
-    void createClub_ShouldCreateClub_WhenUserIsAdmin() {
+    void TC1_CreateClub() {
         // Arrange
         when(clubRepository.save(any(Club.class))).thenReturn(testClub);
 
@@ -73,18 +73,92 @@ public class ClubServiceTest {
 
         // Assert
         assertNotNull(createdClub);
-        assertEquals("Test Club", createdClub.getName());
+        assertEquals("Comet Racing", createdClub.getName());
         verify(clubRepository).save(testClub);
     }
 
     @Test
-    void createClub_ShouldThrowException_WhenUserIsNotAdmin() {
+    void TC2_CreateClub() {
         // Act & Assert
         assertThrows(AccessDeniedException.class, () -> 
             clubService.createClub(testClub, regularUser)
         );
         verify(clubRepository, never()).save(any(Club.class));
     }
+
+    @Test
+    void TC3_CreateClub() {
+        // Act & Assert
+        assertThrows(AccessDeniedException.class, () ->
+                clubService.createClub(testClub, null)
+        );
+        verify(clubRepository, never()).save(any(Club.class));
+    }
+
+    @Test
+    void TC4_CreateClub() {
+        // Act & Assert
+        testClub.setName("C");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                clubService.createClub(testClub, adminUser)
+        );
+        assertEquals("Invalid club name format.", exception.getMessage());
+    }
+
+    @Test
+    void TC5_CreateClub() {
+        // Act & Assert
+        testClub.setName("\n");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                clubService.createClub(testClub, adminUser)
+        );
+        assertEquals("Invalid club name format.", exception.getMessage());
+    }
+
+    @Test
+    void TC1_SearchClubByTag()
+    {
+        // Arrange
+        List<Club> clubs = Collections.singletonList(testClub);
+        when(clubRepository.findByTag("test")).thenReturn(clubs);
+
+        // Act
+        List<Club> result = clubService.searchClubsByTag(Collections.singletonList("test"));
+
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals("Comet Racing", result.get(0).getName());
+    }
+
+    @Test
+    void TC2_SearchClubByTag()
+    {
+        // Act
+        List<Club> result = clubService.searchClubsByTag(Collections.emptyList());
+
+        // Assert
+        assertTrue(result.isEmpty());
+        verify(clubRepository, never()).findByTag(anyString());
+    }
+
+    @Test
+    void TC3_SearchClubByTag()
+    {
+        // Arrange
+        List<Club> clubs = Collections.singletonList(testClub);
+        List<String> tags = new ArrayList<>();
+        tags.add("test");
+        tags.add("test");
+        when(clubService.searchClubsByTag(tags)).thenReturn(clubs);
+
+        // Act
+        List<Club> result = clubService.searchClubsByTag(Collections.singletonList("test"));
+
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals("Comet Racing", result.get(0).getName());
+    }
+
 
     @Test
     void searchClubs_ShouldReturnMatchingClubs() {
@@ -97,32 +171,10 @@ public class ClubServiceTest {
 
         // Assert
         assertEquals(1, result.size());
-        assertEquals("Test Club", result.get(0).getName());
+        assertEquals("Comet Racing", result.get(0).getName());
     }
 
-    @Test
-    void searchClubsByTag_ShouldReturnMatchingClubs() {
-        // Arrange
-        List<Club> clubs = Collections.singletonList(testClub);
-        when(clubRepository.findByTag("test")).thenReturn(clubs);
 
-        // Act
-        List<Club> result = clubService.searchClubsByTag(Collections.singletonList("test"));
-
-        // Assert
-        assertEquals(1, result.size());
-        assertEquals("Test Club", result.get(0).getName());
-    }
-
-    @Test
-    void searchClubsByTag_ShouldReturnEmptyList_WhenNoTagsProvided() {
-        // Act
-        List<Club> result = clubService.searchClubsByTag(Collections.emptyList());
-
-        // Assert
-        assertTrue(result.isEmpty());
-        verify(clubRepository, never()).findByTag(anyString());
-    }
 
     @Test
     void deleteClub_ShouldDeleteClub_WhenUserIsAdmin() {

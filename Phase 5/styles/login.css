@@ -1,0 +1,13 @@
+h1 {
+  line-height:0px;
+}
+
+#login {
+  width: 20%;
+  height: 20%;
+  background-color: #eee;
+
+  padding:10px;
+  border: 2px solid black;
+  margin:0;
+}

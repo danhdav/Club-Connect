@@ -1,0 +1,66 @@
+* {
+  font-size:48px;
+}
+
+#my_clubs {
+  width:100%;
+  height:65%;
+  background-color:#e87500;
+
+  padding:0px 0px 0px 0px;
+  border: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+
+  position:fixed;
+  top: 15%;
+  left:0px;
+
+  display: flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#my_clubs_text > a:link {
+  color:#154734;
+}
+
+#my_clubs_text > a:visited {
+  color:#154734;
+}
+
+#join_clubs, #manage_clubs {
+  padding: 0;
+  border:  0;
+  margin:  0;
+
+  width: 50%;
+  height:20%;
+
+  position:fixed;
+  bottom:0px;
+
+  background-color:#154734;
+
+  display: flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#join_clubs {
+  left:  0px;
+}
+
+#manage_clubs {
+  right:  0px;
+}
+
+#join_clubs > p > a, #manage_clubs > p > a {
+  color:#e87500;
+}
+
+a:hover {
+  color:white !Important;
+}
+
+
+

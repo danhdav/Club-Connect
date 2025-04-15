@@ -20,14 +20,6 @@
   justify-content:center;
 }
 
-#my_clubs_text > a:link {
-  color:#154734;
-}
-
-#my_clubs_text > a:visited {
-  color:#154734;
-}
-
 #join_clubs, #manage_clubs {
   padding: 0;
   border:  0;
@@ -54,13 +46,9 @@
   right:  0px;
 }
 
-#join_clubs > p > a, #manage_clubs > p > a {
-  color:#e87500;
-}
 
-a:hover {
-  color:white !Important;
-}
+
+
 
 
 

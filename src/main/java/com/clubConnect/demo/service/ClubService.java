@@ -161,7 +161,6 @@ public class ClubService {
 
     public Announcement getAnnouncementFromId(Long clubId, Long announcementId)
     {
-        Announcement announcement;
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new IllegalArgumentException("Club not found"));
 

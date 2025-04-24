@@ -10,6 +10,7 @@ import com.clubConnect.demo.repository.UserRepository;
 import com.clubConnect.demo.service.ClubService;
 import com.clubConnect.demo.service.OfficerService;
 import com.clubConnect.demo.service.UserService;
+import com.clubConnect.demo.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,9 +36,11 @@ public class Phase5Test {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
     private OfficerService officerService;
-
     @InjectMocks
     private ClubService clubService;
     @InjectMocks
@@ -50,6 +53,7 @@ public class Phase5Test {
     private User officerUser;
     private User regularUser;
     private Club testClub;
+    private Announcement existingAnn;
 
     @BeforeEach
     void setUp() {
@@ -73,6 +77,14 @@ public class Phase5Test {
         regularUser.setUsername("Regular User");
         regularUser.setPassword("password");
         regularUser.setId(12345L);
+
+        existingAnn = new Announcement();
+        existingAnn.setId(123L);
+        existingAnn.setAuthor(officerUser);
+        existingAnn.setClub(testClub);
+        existingAnn.setCreatedAt(new Date());
+        existingAnn.setContentHtml("Hey Gamers");
+        testClub.getAnnouncements().add(existingAnn);
     }
 
 
@@ -84,7 +96,7 @@ public class Phase5Test {
         Announcement newAnnouncement = new Announcement();
         newAnnouncement.setContentHtml(expectedMessage);
 
-        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(testClub));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
 
         Announcement createdAnnouncement = officerService.createAnnouncement(123L, newAnnouncement, officerUser);
 
@@ -96,11 +108,11 @@ public class Phase5Test {
     @Test
     void TC2_CreateAnnouncement()
     {
-        String expectedMessage = "Hey Gamers";
+        String expectedMessage = "";
         Announcement newAnnouncement = new Announcement();
         newAnnouncement.setContentHtml(expectedMessage);
 
-        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(testClub));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
 
         // Assert
         assertThrows(IllegalArgumentException.class, () ->
@@ -111,11 +123,11 @@ public class Phase5Test {
     @Test
     void TC3_CreateAnnouncement()
     {
-        String expectedMessage = "Hey Gamers";
+        String expectedMessage = "        ";
         Announcement newAnnouncement = new Announcement();
         newAnnouncement.setContentHtml(expectedMessage);
 
-        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(testClub));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
 
         // Assert
         assertThrows(IllegalArgumentException.class, () ->
@@ -130,9 +142,11 @@ public class Phase5Test {
         Announcement newAnnouncement = new Announcement();
         newAnnouncement.setContentHtml(expectedMessage);
 
+        when(clubRepository.findById(12345L)).thenReturn(Optional.empty());
+
         // Assert
-        assertThrows(IllegalArgumentException.class, () ->
-                officerService.createAnnouncement(12345L, newAnnouncement, officerUser)
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.createAnnouncement(12345L, newAnnouncement, officerUser)
         );
     }
 
@@ -142,6 +156,8 @@ public class Phase5Test {
         String expectedMessage = "Hey Gamers";
         Announcement newAnnouncement = new Announcement();
         newAnnouncement.setContentHtml(expectedMessage);
+
+        when(clubRepository.findById(-1L)).thenReturn(Optional.empty());
 
         // Assert
         assertThrows(IllegalArgumentException.class, () ->
@@ -176,4 +192,117 @@ public class Phase5Test {
                 officerService.createAnnouncement(123L, newAnnouncement, null)
         );
     }
+
+    @Test
+    void TC1_UpdateAnnouncement()
+    {
+        String expectedMessage = "Hey Gamers";
+
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        Announcement result =  officerService.updateAnnouncement(123L, 123L, expectedMessage, officerUser);
+
+
+        assertNotNull(result);
+        assertEquals(123L, result.getId());
+        assertEquals(expectedMessage, result.getContentHtml());
+    }
+
+    @Test
+    void TC2_UpdateAnnouncement()
+    {
+        String expectedMessage = "";
+
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.updateAnnouncement(123L, 123L, expectedMessage, officerUser)
+        );
+    }
+
+    @Test
+    void TC3_UpdateAnnouncement()
+    {
+        String expectedMessage = "    ";
+
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.updateAnnouncement(123L, 123L, expectedMessage, officerUser)
+        );
+    }
+
+    @Test
+    void TC4_UpdateAnnouncement()
+    {
+        String expectedMessage = "Hey Gamers";
+
+        when(clubRepository.findById(12345L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.updateAnnouncement(12345L, 123L, expectedMessage, officerUser)
+        );
+    }
+
+    @Test
+    void TC7_UpdateAnnouncement()
+    {
+        String expectedMessage = "Hey Gamers";
+
+        when(clubRepository.findById(-1L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.updateAnnouncement(-1L, 123L, expectedMessage, officerUser)
+        );
+    }
+
+    @Test
+    void TC10_UpdateAnnouncement()
+    {
+        String expectedMessage = "Hey Gamers";
+
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.updateAnnouncement(123L, 12345L, expectedMessage, officerUser)
+        );
+    }
+
+    @Test
+    void TC19_UpdateAnnouncement()
+    {
+        String expectedMessage = "Hey Gamers";
+
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.updateAnnouncement(123L, -1L, expectedMessage, officerUser)
+        );
+    }
+
+    @Test
+    void TC28_UpdateAnnouncement()
+    {
+        String expectedMessage = "Hey Gamers";
+
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.updateAnnouncement(123L, -1L, expectedMessage, regularUser)
+        );
+    }
+
+    @Test
+    void TC55_UpdateAnnouncement()
+    {
+        String expectedMessage = "Hey Gamers";
+
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(NullPointerException.class,
+                () -> officerService.updateAnnouncement(123L, -1L, expectedMessage, null)
+        );
+    }
+
+    
 }

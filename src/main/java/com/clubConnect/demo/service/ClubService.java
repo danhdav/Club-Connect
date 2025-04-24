@@ -159,6 +159,25 @@ public class ClubService {
         }).toList();
     }
 
+    public Announcement getAnnouncementFromId(Long clubId, Long announcementId)
+    {
+        Announcement announcement;
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new IllegalArgumentException("Club not found"));
+
+        List<Announcement> announcements = club.getAnnouncements();
+
+        for (Announcement announcementEntry : announcements)
+        {
+            if (announcementEntry.getId().equals(announcementId))
+            {
+                return announcementEntry;
+            }
+        }
+
+        throw new IllegalArgumentException("Announcement not found with ID: " + announcementId);
+    }
+
     /**
      * Toggle a user's subscription status for a club
      * @param clubId Club ID

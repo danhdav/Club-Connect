@@ -4,22 +4,19 @@ import com.clubConnect.demo.controller.OfficerController;
 import com.clubConnect.demo.entities.Announcement;
 import com.clubConnect.demo.entities.Club;
 import com.clubConnect.demo.entities.User;
-import com.clubConnect.demo.misc.Role;
 import com.clubConnect.demo.repository.ClubRepository;
 import com.clubConnect.demo.repository.UserRepository;
 import com.clubConnect.demo.service.ClubService;
 import com.clubConnect.demo.service.OfficerService;
 import com.clubConnect.demo.service.UserService;
 import com.clubConnect.demo.service.EmailService;
+import jakarta.validation.constraints.Null;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.util.*;
 
@@ -287,7 +284,7 @@ public class Phase5Test {
 
         when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalStateException.class,
                 () -> officerService.updateAnnouncement(123L, -1L, expectedMessage, regularUser)
         );
     }
@@ -304,5 +301,74 @@ public class Phase5Test {
         );
     }
 
+    @Test
+    void TC1_DeleteAnnouncement()
+    {
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        officerService.deleteAnnouncement(123L, 123L, officerUser);
+
+        assertTrue(testClub.getAnnouncements().isEmpty());
+    }
+
+    @Test
+    void TC2_DeleteAnnouncement()
+    {
+        when(clubRepository.findById(12345L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.deleteAnnouncement(12345L, 123L, officerUser)
+        );
+    }
+
+    @Test
+    void TC3_DeleteAnnouncement()
+    {
+        when(clubRepository.findById(-1L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.deleteAnnouncement(-1L, 123L, officerUser)
+        );
+    }
+
+    @Test
+    void TC4_DeleteAnnouncement()
+    {
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.deleteAnnouncement(123L, 12345L, officerUser)
+        );
+    }
+
+    @Test
+    void TC7_DeleteAnnouncement()
+    {
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> officerService.deleteAnnouncement(123L, -1L, officerUser)
+        );
+    }
+
+    @Test
+    void TC10_DeleteAnnouncement()
+    {
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(IllegalStateException.class,
+                () -> officerService.deleteAnnouncement(123L, 123L, regularUser)
+        );
+    }
+
+    @Test
+    void TC19_DeleteAnnouncement()
+    {
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        assertThrows(NullPointerException.class,
+                () -> officerService.deleteAnnouncement(123L, 123L, null)
+        );
+    }
     
 }

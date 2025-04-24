@@ -60,6 +60,7 @@ public class OfficerService {
 
     public void deleteAnnouncement(Long clubId, Long announcementId, User officer) {
         Club club = validateOfficerAccess(clubId, officer);
+        findAnnouncementById(club, announcementId);
         club.getAnnouncements().removeIf(a -> a.getId().equals(announcementId));
     }
 

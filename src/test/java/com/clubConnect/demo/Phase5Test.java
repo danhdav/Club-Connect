@@ -370,5 +370,5 @@ public class Phase5Test {
                 () -> officerService.deleteAnnouncement(123L, 123L, null)
         );
     }
-    
+
 }

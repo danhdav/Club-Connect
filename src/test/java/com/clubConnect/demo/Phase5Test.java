@@ -105,6 +105,9 @@ public class Phase5Test {
         testComment.setAnnouncement(testAnnouncement);
         testComment.setText("so cool");
         testComment.setCreatedAt(LocalDateTime.now());
+        List<Comment> commentList = testAnnouncement.getComments();
+        commentList.add(testComment);
+        testAnnouncement.setComments(commentList);
     }
 
 
@@ -573,5 +576,95 @@ public class Phase5Test {
 
         ResponseEntity<Object> response = userController.addComment(-1L, 123L, 123L, commentData);
         assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void TC1_DeleteComment()
+    {
+        when(userRepository.findById(123L)).thenReturn(Optional.of(officerUser));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        ResponseEntity<Object> response = officerController.deleteComment(123L, 123L, 123L, 123L);
+        assertEquals(200, response.getStatusCodeValue());
+    }
+
+    @Test
+    void TC2_DeleteComment()
+    {
+        when(userRepository.findById(123L)).thenReturn(Optional.of(officerUser));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        ResponseEntity<Object> response = officerController.deleteComment(123L, 123L, 12345L, 123L);
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void TC3_DeleteComment()
+    {
+        when(userRepository.findById(123L)).thenReturn(Optional.of(officerUser));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        ResponseEntity<Object> response = officerController.deleteComment(123L, 123L, -1L, 123L);
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void TC4_DeleteComment()
+    {
+        when(userRepository.findById(123L)).thenReturn(Optional.of(officerUser));
+        when(clubRepository.findById(12345L)).thenReturn(Optional.empty());
+
+        ResponseEntity<Object> response = officerController.deleteComment(12345L, 123L, 123L, 123L);
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void TC7_DeleteComment()
+    {
+        when(userRepository.findById(123L)).thenReturn(Optional.of(officerUser));
+        when(clubRepository.findById(-1L)).thenReturn(Optional.empty());
+
+        ResponseEntity<Object> response = officerController.deleteComment(-1L, 123L, 123L, 123L);
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void TC10_DeleteComment()
+    {
+        when(userRepository.findById(123L)).thenReturn(Optional.of(officerUser));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        ResponseEntity<Object> response = officerController.deleteComment(123L, 12345L, 123L, 123L);
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void TC19_DeleteComment()
+    {
+        when(userRepository.findById(123L)).thenReturn(Optional.of(officerUser));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        ResponseEntity<Object> response = officerController.deleteComment(123L, -1L, 123L, 123L);
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void TC28_DeleteComment()
+    {
+        when(userRepository.findById(12345L)).thenReturn(Optional.of(regularUser));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        ResponseEntity<Object> response = officerController.deleteComment(123L, 12345L, 123L, 12345L);
+        assertEquals(403, response.getStatusCodeValue());
+    }
+
+    @Test
+    void TC55_DeleteComment()
+    {
+        when(userRepository.findById(-1L)).thenReturn(Optional.of(regularUser));
+        when(clubRepository.findById(123L)).thenReturn(Optional.of(testClub));
+
+        ResponseEntity<Object> response = officerController.deleteComment(123L, 12345L, 123L, -1L);
+        assertEquals(403, response.getStatusCodeValue());
     }
 }

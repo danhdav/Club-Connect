@@ -67,7 +67,10 @@ public class OfficerService {
     public void deleteComment(Long clubId, Long announcementId, Long commentId, User officer) {
         Club club = validateOfficerAccess(clubId, officer);
         Announcement announcement = findAnnouncementById(club, announcementId);
-        announcement.getComments().removeIf(c -> c.getId().equals(commentId));
+        boolean removed = announcement.getComments().removeIf(c -> c.getId().equals(commentId));
+        if (!removed) {
+            throw new IllegalArgumentException("Comment not found");
+        }
     }
 
     public Club updateClubPage(Long clubId, String description, List<String> images, User officer) {

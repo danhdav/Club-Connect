@@ -27,7 +27,12 @@ public class OfficerService {
     public Announcement createAnnouncement(Long clubId, Announcement announcement, User officer) {
         // Get the club and validate officer access
         Club club = validateOfficerAccess(clubId, officer);
-        
+
+        //Check announcement message
+        if (announcement.getContentHtml() == null || announcement.getContentHtml().trim().isEmpty()) {
+            throw new IllegalArgumentException("Announcement text is required");
+        }
+
         // Set up the announcement
         announcement.setClub(club);
         announcement.setAuthor(officer);
@@ -53,6 +58,9 @@ public class OfficerService {
 
     public Announcement updateAnnouncement(Long clubId, Long announcementId, String newContent, User officer) {
         Club club = validateOfficerAccess(clubId, officer);
+        if (newContent == null || newContent.trim().isEmpty()) {
+            throw new IllegalArgumentException("Announcement text is required");
+        }
         Announcement announcement = findAnnouncementById(club, announcementId);
         announcement.setContentHtml(newContent);
         return announcement;

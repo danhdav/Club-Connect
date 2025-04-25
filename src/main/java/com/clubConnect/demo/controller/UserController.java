@@ -402,7 +402,10 @@ public class UserController {
             // Get the user
             User user = userService.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
-            
+
+            // Get the club and verify it exists
+            Club club = clubService.getClubById(clubId);
+
             // Get the announcement
             Announcement announcement = announcementRepository.findById(announcementId)
                     .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
@@ -458,7 +461,7 @@ public class UserController {
             // Get the announcement and verify it exists and belongs to the specified club
             Announcement announcement = announcementRepository.findById(announcementId)
                     .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
-            
+
             if (!announcement.getClub().getId().equals(clubId)) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Announcement does not belong to the specified club"));

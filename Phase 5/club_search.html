@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="description" content="Club listing page.">
+    <title>Club Search</title>
+
+    <link href="styles/header.css" rel="stylesheet" />
+    <link href="styles/club_search.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="header">
+      <a href="index.html"><img src="images/Temp Home Icon.jpg" id="home_icon" /></a>
+      <a href="settings.html"><img src="images/Temp Settings Icon.jpg" id="settings_icon" /></a>
+      <div id="search_container">
+        <div id="searchbar">
+          <img src="images/Temp Filter Icon.jpg" id="filter_icon" />
+          <form action="club_search.html" method="get">
+            <input type="text" name="search" id="search_text" />
+            <input type="image" src="images/Temp Search Icon.png" id="search_icon" />
+          </form>
+          <div id="filter_wrapper">
+            <form action="club_search.html" method="get" id="filter">
+              <label>Tag 1&nbsp <input type="checkbox" name="tags" value="tag 1"><br /></label>
+              <label>Tag 2&nbsp <input type="checkbox" name="tags" value="tag 2"><br /></label>
+              <label>Tag 3&nbsp <input type="checkbox" name="tags" value="tag 3"></label>
+              <input type="submit" name="filter" value="Apply Filters" id="filter_button" />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div> <!-- End of Header -->
+
+    <div id="search_results">
+    </div> <!-- End of Search Results -->
+
+    <script src="scripts/filterDisplay.js"></script>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+.green_background {
+  background-color:#154734;
+}
+
+.green_background:link {
+  color:#e87500;
+}
+
+.green_background:visited {
+  color:#e87500;
+}
+
+.orange_background {
+  background-color:#e87500;
+}
+
+.orange_background:link {
+  color:#154734
+}
+
+.orange_background:visited {
+  color:#154734
+}
+
+.link:hover {
+  color:white;
+}

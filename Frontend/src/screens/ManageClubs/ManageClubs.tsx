@@ -100,6 +100,9 @@ export const MyClubs = (): JSX.Element => {
         <Button
           variant="ghost"
           className="font-['Source_Serif_Pro',Helvetica] text-white text-[64px] relative"
+          onClick={() => {
+            window.location.href = "/home/createClub"; // Insert condition to check if login input is valid
+          }}
         >
           Create Club
           <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[500px] h-[5px] bg-white" />

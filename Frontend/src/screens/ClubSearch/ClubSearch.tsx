@@ -92,30 +92,31 @@ export const ClubSearch = (): JSX.Element => {
           {/* Club Cards */}
           <div className="flex flex-col gap-[50px]">
             {clubs.map((club) => (
-              <Card
+                <Card
                 key={club.id}
                 className="w-full h-[250px] bg-[#d9d9d9] rounded-none shadow-none"
-              >
+                onClick={() => window.location.href = `/home/search/${club.name}`}
+                >
                 <CardContent className="p-0 h-full relative">
-                  {/* Club Logo */}
-                  <div className="absolute w-[200px] h-[200px] top-[25px] left-[50px] bg-[#363636]" />
+                {/* Club Logo */}
+                <div className="absolute w-[200px] h-[200px] top-[25px] left-[50px] bg-[#363636]" />
 
-                  {/* Club Info */}
-                  <div className="ml-[293px] pt-6">
-                    <h2 className="[font-family:'Source_Serif_Pro',Helvetica] font-bold text-black text-[64px]">
-                      {club.name}
-                    </h2>
+                {/* Club Info */}
+                <div className="ml-[293px] pt-6">
+                <h2 className="[font-family:'Source_Serif_Pro',Helvetica] font-bold text-black text-[64px]">
+                  {club.name}
+                </h2>
 
-                    <p className="mt-[24px] [font-family:'Source_Serif_Pro',Helvetica] font-normal text-black text-[32px]">
-                      {club.description}
-                    </p>
+                <p className="mt-[24px] [font-family:'Source_Serif_Pro',Helvetica] font-normal text-black text-[32px]">
+                  {club.description}
+                </p>
 
-                    <p className="mt-[24px] [font-family:'Source_Serif_Pro',Helvetica] font-normal text-black text-[32px]">
-                      {club.tags.join(" ")}
-                    </p>
-                  </div>
+                <p className="mt-[24px] [font-family:'Source_Serif_Pro',Helvetica] font-normal text-black text-[32px]">
+                  {club.tags.join(" ")}
+                </p>
+                </div>
                 </CardContent>
-              </Card>
+                </Card>
             ))}
           </div>
         </div>

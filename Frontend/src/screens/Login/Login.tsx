@@ -22,9 +22,9 @@ export const Login = (): JSX.Element => {
                   </h1>
 
                   {/* Login label */}
-                  <label className="absolute top-[183px] left-[18px] [font-family:'Source_Serif_Pro',Helvetica] font-normal text-black text-5xl tracking-[0] leading-[normal]">
+                    <label className="absolute top-[183px] left-[18px] [font-family:'Source_Serif_Pro',Helvetica] font-normal text-black text-[36px] tracking-[0] leading-[normal]">
                     Login:
-                  </label>
+                    </label>
 
                   {/* Login input */}
                   <div className="absolute w-[776px] h-[102px] top-[260px] left-[73px] flex items-center">
@@ -33,7 +33,7 @@ export const Login = (): JSX.Element => {
                   </div>
 
                   {/* Password label */}
-                  <label className="absolute top-[392px] left-[18px] [font-family:'Source_Serif_Pro',Helvetica] font-normal text-black text-5xl tracking-[0] leading-[normal]">
+                  <label className="absolute top-[392px] left-[18px] [font-family:'Source_Serif_Pro',Helvetica] font-normal text-black text-[36px] tracking-[0] leading-[normal]">
                     Password:
                   </label>
 
@@ -54,7 +54,13 @@ export const Login = (): JSX.Element => {
               href="#"
               className="absolute top-[927px] left-[694px] [font-family:'Source_Serif_Pro',Helvetica] font-normal text-[#1eb4cf] text-[32px] tracking-[0] leading-[normal] hover:underline"
             >
+              <Button
+                onClick={() => {
+                window.location.href = "/"; // Replace this with a "sign up" page later
+                }}
+              >
               Sign Up
+              </Button>
             </a>
           </div>
 
@@ -62,7 +68,7 @@ export const Login = (): JSX.Element => {
             <Button
             className="absolute w-[196px] h-[86px] top-[928px] left-[1370px] bg-[#e87500] hover:bg-[#e87500]/90 border-[5px] border-solid border-[#154734] rounded-none [font-family:'Source_Serif_Pro',Helvetica] font-normal text-5xl tracking-[0] leading-[normal] p-0"
             onClick={() => {
-              window.location.href = "/home"; // Replace "/new-page" with your desired route
+              window.location.href = "/home"; // Insert condition to check if login input is valid
             }}
             >
             Login

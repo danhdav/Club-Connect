@@ -2,6 +2,7 @@ import { HomeIcon, SettingsIcon } from "lucide-react";
 import React from "react";
 import { Card, CardContent } from "../../components/ui/card";
 import { Separator } from "../../components/ui/separator";
+import { SettingsBox } from "../../components/ui/settingsbox";
 
 export const Home = (): JSX.Element => {
   return (
@@ -10,15 +11,20 @@ export const Home = (): JSX.Element => {
         <div className="w-[300px] h-[200px] bg-[url(/logo.svg)] bg-[100%_100%]">
           <HomeIcon className="h-12 w-12 text-white m-6" />
         </div>
-        <div className="w-[300px] h-[200px] flex justify-end items-start">
-          <SettingsIcon className="h-12 w-12 text-white m-6" />
-        </div>
+        <SettingsBox />
       </header>
 
       <main className="flex-1 border border-black">
         <Card className="h-[662px] flex items-center justify-center">
           <CardContent className="flex flex-col items-center justify-center">
-            <h1 className="font-serif text-white text-[64px]">My Clubs</h1>
+          <h1
+            className="font-serif text-white text-[64px]"
+            onClick={() => {
+            window.location.href = "/home/myClubs"; // Insert condition to check if login input is valid
+            }}
+          >
+            My Clubs
+          </h1>
             <Separator className="w-[500px] h-[5px] mt-4 bg-white" />
           </CardContent>
         </Card>
@@ -27,14 +33,23 @@ export const Home = (): JSX.Element => {
       <footer className="grid grid-cols-2 h-[281px]">
         <Card className="rounded-none">
           <CardContent className="flex flex-col items-center justify-center h-full">
-            <h2 className="font-serif text-white text-[64px]">Join Clubs</h2>
+            <h2 
+              className="font-serif text-white text-[64px]"
+              onClick={() => {
+              window.location.href = "/home/search"; // Insert condition to check if login input is valid
+              }}
+            >
+              Join Clubs
+            </h2>
             <Separator className="w-[500px] h-[5px] mt-4 bg-white" />
           </CardContent>
         </Card>
 
         <Card className="rounded-none">
           <CardContent className="flex flex-col items-center justify-center h-full">
-            <h2 className="font-serif text-white text-[64px]">Manage Clubs</h2>
+            <h2 className="font-serif text-white text-[64px]">
+              Manage Clubs
+            </h2>
             <Separator className="w-[500px] h-[5px] mt-4 bg-white" />
           </CardContent>
         </Card>

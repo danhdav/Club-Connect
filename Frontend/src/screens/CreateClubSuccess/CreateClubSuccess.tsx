@@ -107,6 +107,9 @@ export const CreateClubSuccess = (): JSX.Element => {
             <Button
               variant="link"
               className="font-serif font-normal text-white text-[64px] hover:text-white/90"
+              onClick={() => {
+                window.location.href = "/home/myClubs"; // Redirect to Manage My Clubs
+              }}
             >
               Return to Manage My Clubs
             </Button>

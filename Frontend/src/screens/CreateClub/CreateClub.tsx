@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
+import { SettingsBox } from "../../components/ui/settingsbox";
 
 export const CreateClub = (): JSX.Element => {
   // Form field data
@@ -39,7 +40,7 @@ export const CreateClub = (): JSX.Element => {
           </div>
 
           {/* Settings */}
-          <div className="w-[300px] h-[200px] bg-[url(/settings-box.png)] bg-cover bg-[50%_50%]" />
+          <SettingsBox />
         </header>
 
         {/* Form Section */}
@@ -140,6 +141,18 @@ export const CreateClub = (): JSX.Element => {
             <Button
               className="h-[100px] w-[100px] bg-black text-white rounded-md"
               aria-label="SaveIcon and submit"
+              onClick={() => {
+              const allFieldsFilled = formFields.every((field) => {
+                const inputElement = document.getElementById(field.id) as HTMLInputElement | HTMLTextAreaElement;
+                return inputElement && inputElement.value.trim() !== "";
+              });
+
+              if (allFieldsFilled) {
+                window.location.href = "/home/createClub/success";
+              } else {
+                window.location.href = "/home/createClub/invalid";
+              }
+              }}
             >
               <SaveIcon className="h-12 w-12" />
             </Button>

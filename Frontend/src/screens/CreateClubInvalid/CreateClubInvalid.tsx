@@ -140,7 +140,11 @@ export const CreateClubInvalid = (): JSX.Element => {
             <h2 className="font-['Source_Serif_Pro',Helvetica] font-normal text-white text-[64px] mb-8">
               Invalid/Missing Info
             </h2>
-            <button className="font-['Source_Serif_Pro',Helvetica] font-normal text-white text-[64px] hover:text-gray-200 transition-colors">
+            <button className="font-['Source_Serif_Pro',Helvetica] font-normal text-white text-[64px] hover:text-gray-200 transition-colors"
+              onClick={() => {
+                window.location.href = "/home/createClub"; // Redirect to Create Club page
+              }}
+            >
               Return to Creating Club
             </button>
             <div className="w-[705px] h-[5px] mt-4 bg-[url(/text-bar.svg)] bg-no-repeat" />

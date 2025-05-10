@@ -1,0 +1,92 @@
+main {
+  width:100%;
+  height:85%;
+
+  position:absolute;
+  top:15%;
+  left:0%;
+}
+
+#form {
+  width:100%;
+  height:100%;
+
+  display:grid;
+  grid-template-columns: [col1] 10% [col2] 30% [col3] 20% [col4] 30% [col5] 10%;
+  grid-template-rows:    [row1]  5% [row2] 30% [row3] 30% [row4] 30% [row5]  5%;
+
+  font-size:28px;
+}
+
+#club_name {
+  grid-column-start: col2;
+  grid-column-end:   col3;
+  grid-row-start:    row2;
+  grid-row-end:      row3;
+}
+
+#tags {
+  grid-column-start: col4;
+  grid-column-end:   col5;
+  grid-row-start:    row2;
+  grid-row-end:      row3;
+}
+
+#officers {
+  grid-column-start: col2;
+  grid-column-end:   col3;
+  grid-row-start:    row3;
+  grid-row-end:      row4;
+}
+
+#username {
+  grid-column-start: col2;
+  grid-column-end:   col3:
+  grid-row-start:    row4;
+  grid-row-end:      row5;
+}
+
+#password {
+  grid-column-start: col4;
+  grid-column-end:   col5;
+  grid-row-start:    row4;
+  grid-row-end:      row5;
+}
+
+input[type="text"] {
+  width:100%;
+  height:30px;
+
+  position:relative;
+  top:10px;
+  left:20px;
+
+  font-size:24px;
+}
+
+input[type="submit"] {
+  width: 200px;
+  height: 60px;
+
+  margin:0px;
+  font-size:20px;
+
+  grid-column-start:col4;
+  grid-column-end:  col5;
+  grid-row-start:   row4;
+  grid-row-end:     row5;
+  place-self:        end;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

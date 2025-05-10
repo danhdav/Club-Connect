@@ -1,0 +1,36 @@
+#header {
+  width: 100%;
+  height: 15%;
+  background-color: #154734;
+
+  padding:0px 0px 0px 0px;
+  border: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+
+  position:fixed;
+  top: 0px;
+  left:0px;
+}
+
+#home_icon {
+  width=auto;
+  max-height:100%;
+
+  position:absolute;
+  top:0px;
+  left:0px;
+
+  display:block;
+}
+
+#settings_icon {
+  width=auto;
+  max-height:100%;
+
+  position:absolute;
+  top:0px;
+  right:0px;
+
+  display:block;
+}
+

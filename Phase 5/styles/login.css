@@ -1,0 +1,63 @@
+body {
+  background-color:#e87500;
+}
+
+#background-1 {
+  width:75%;
+  height:100%;
+
+  position:fixed;
+  top: 0px;
+  left:0px;
+
+  background-color:#154734;
+}
+
+label {
+  font-size:36px;
+}
+
+h1 {
+  line-height:0px;
+  font-size:64px;
+}
+
+.textbox {
+  width: 50%;
+  
+  font-size:36px;
+
+  border:none;
+  border-left-width:5px;
+  border-left-style:solid;
+  border-left-color:#e87500;
+  margin:25px 50px;
+
+  caret-color:#154734;
+  color:#154734;
+}
+
+#login {
+  width: 50%;
+  height: 50%;
+  background-color: #eee;
+
+  padding:10px;
+  border: 2px solid black;
+  margin:0;
+
+  position:absolute;
+  right: 100px;
+  bottom:100px;
+}
+
+#submit {
+  width: 20%;
+  height:10%;
+
+  background-color:#e87500;
+
+  position:absolute;
+  right:10%;
+  bottom:10%;
+}

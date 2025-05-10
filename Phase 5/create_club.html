@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="description" content="Club creation page" />
+    <title>Create Club</title>
+
+    <link href="styles/global.css" rel="stylesheet" />
+    <link href="styles/header.css" rel="stylesheet" />
+    <link href="styles/create_club.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header id="header">
+      <a href="index.html"><img src="images/Temp Home Icon.jpg" id="home_icon" /></a>
+      <a href="settings.html"><img src="images/Temp Settings Icon.jpg" id="settings_icon" /></a>
+    </header> <!-- End of Header -->
+    <main>
+      <form id="form" action="manage_clubs.html">
+        <label id="club_name">Club Name:<br /><input type="text" name="club_name" /></label>
+        <label id="tags">Tags:<br /><input type="text" name="tags" /></label>
+        <label id="officers">Officer Username(s):<br /><input type="text" name="officers" /></label>
+        <label id="username">Admin Username:<br /><input type="text" name="username" /></label>
+        <label id="password">Admin Password:<br /><input type="text" name="password" /></label>
+        <input type="submit" name="submit" value="Create" class="orange_background" />
+      </form>
+    </main>
+  </body>
+</html>
